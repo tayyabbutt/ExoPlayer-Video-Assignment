@@ -50,3 +50,15 @@ By following the MVVM architecture, the app separates the UI from the business l
 * Ad Playback: When the ad is finished, the main video resumes from the position where it left off.
 * UI Controls: During ad playback, the video controls are hidden. When the main video plays, the controls are re-enabled.
 
+
+
+
+
+
+$${\color{red}Note}$$
+
+There are 3 branches
+* Main (Merged branch with new Media3 Exoplayer code)
+* Old-Main (Consist of Old ExoPlayer)
+* Media3 (Consist of Media3 ExoPlayer)
+
