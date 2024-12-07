@@ -3,8 +3,8 @@ package com.video.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.video.model.Video
 import com.video.repository.VideoRepository
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +14,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-
 
 class VideoViewModel(private val repository: VideoRepository, private val exoPlayer: ExoPlayer) : ViewModel() {
 
@@ -51,7 +50,6 @@ class VideoViewModel(private val repository: VideoRepository, private val exoPla
         currentIndex = videoList.indexOfFirst { it.isAd }.takeIf { it >= 0 } ?: currentIndex
         _isAdPlaying.value = true // Set the flag to true
 
-        // Play the ad video because currentIndex has ad video index which is 2
         playCurrentVideo()
     }
 
@@ -60,7 +58,9 @@ class VideoViewModel(private val repository: VideoRepository, private val exoPla
         val mainVideoIndex = videoList.indexOfFirst { !it.isAd }
         if (mainVideoIndex >= 0) {
             currentIndex = mainVideoIndex
-            playCurrentVideo(savedPosition) // Resume from the saved position
+            // Rewind 3 seconds and making sure it dosnt go below 0
+            val rewindedPosition = (savedPosition - 3000).coerceAtLeast(0)
+            playCurrentVideo(rewindedPosition) // Resume from the rewinded position
             savedPosition = 0L // Reset the saved position after resuming the main video
             _isAdPlaying.value = false
         } else {
@@ -113,8 +113,8 @@ class VideoViewModel(private val repository: VideoRepository, private val exoPla
     companion object {
         const val AD_THRESHOLD = 30000
     }
-
 }
+
 
 
 
